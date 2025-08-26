@@ -1,0 +1,400 @@
+/* Rozšířené CSS pro pokročilé statistiky */
+
+/* Advanced Statistics Styles */
+.advanced-stats-section {
+    margin-top: var(--spacing-2xl);
+    padding-top: var(--spacing-2xl);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stat-card-large {
+    background: var(--glass);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+    box-shadow: var(--shadow-medium);
+}
+
+.stat-card-large h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-lg);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.chart-container {
+    margin-bottom: var(--spacing-lg);
+    min-height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Monthly Summary */
+.monthly-summary {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-lg);
+}
+
+.summary-item {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-md);
+    text-align: center;
+}
+
+.summary-item .label {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-xs);
+}
+
+.summary-item .value {
+    display: block;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-xs);
+}
+
+.summary-item .earnings {
+    font-size: 0.9rem;
+    color: var(--accent-1);
+    font-weight: 600;
+}
+
+/* Productivity Insights */
+.productivity-insights,
+.hourly-insights {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-lg);
+}
+
+.insight-item {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-md);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.insight-item .icon {
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.insight-item .text {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+/* Project Ranking */
+.project-ranking {
+    margin-top: var(--spacing-lg);
+}
+
+.project-ranking h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-md);
+}
+
+.ranking-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.ranking-item {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
+    display: grid;
+    grid-template-columns: auto auto 1fr auto auto;
+    gap: var(--spacing-sm);
+    align-items: center;
+}
+
+.ranking-item .rank {
+    font-weight: 700;
+    color: var(--accent-1);
+    font-size: 0.9rem;
+    width: 20px;
+}
+
+.ranking-item .project-color {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    box-shadow: 0 0 8px currentColor;
+}
+
+.ranking-item .project-name {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+}
+
+.ranking-item .project-time {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    text-align: right;
+}
+
+.ranking-item .project-percentage {
+    font-size: 0.8rem;
+    color: var(--accent-2);
+    font-weight: 600;
+    text-align: right;
+    min-width: 40px;
+}
+
+/* Stats Grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+}
+
+.stats-grid .stat-card {
+    background: var(--glass);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    text-align: center;
+    box-shadow: var(--shadow-medium);
+    transition: transform 0.3s ease;
+}
+
+.stats-grid .stat-card:hover {
+    transform: translateY(-4px);
+}
+
+.stats-grid .stat-icon {
+    font-size: 1.8rem;
+    margin-bottom: var(--spacing-sm);
+}
+
+.stats-grid .stat-value {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-xs);
+}
+
+.stats-grid .stat-label {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    line-height: 1.2;
+}
+
+/* Goals Section */
+.goals-section {
+    background: var(--glass);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    margin-top: var(--spacing-lg);
+    box-shadow: var(--shadow-medium);
+}
+
+.goals-section h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-lg);
+}
+
+.goal-progress {
+    margin-bottom: var(--spacing-lg);
+}
+
+.goal-bar {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-md);
+    height: 20px;
+    overflow: hidden;
+    margin-bottom: var(--spacing-md);
+    position: relative;
+}
+
+.goal-fill {
+    background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+    height: 100%;
+    border-radius: var(--radius-md);
+    transition: width 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.goal-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    animation: goalShimmer 2s infinite;
+}
+
+@keyframes goalShimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+.goal-text {
+    text-align: center;
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.goal-text #goalPercentage {
+    color: var(--accent-1);
+    font-size: 0.9rem;
+    margin-left: var(--spacing-sm);
+}
+
+#setGoalBtn {
+    width: 100%;
+    margin-top: var(--spacing-md);
+}
+
+/* O vývojáři section styles */
+.about-developer {
+    background: var(--glass);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    margin-top: var(--spacing-lg);
+    box-shadow: var(--shadow-medium);
+    text-align: center;
+}
+
+.about-developer h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+}
+
+.developer-info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    align-items: center;
+}
+
+.developer-quote {
+    font-style: italic;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-bottom: var(--spacing-md);
+    padding: var(--spacing-md);
+    background: rgba(255, 255, 255, 0.05);
+    border-left: 3px solid var(--accent-1);
+    border-radius: var(--radius-sm);
+}
+
+.developer-details {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    line-height: 1.5;
+}
+
+.developer-details strong {
+    color: var(--text-primary);
+}
+
+/* Mobile responsiveness for advanced stats */
+@media (max-width: 480px) {
+    .monthly-summary,
+    .productivity-insights,
+    .hourly-insights {
+        grid-template-columns: 1fr;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .ranking-item {
+        grid-template-columns: auto 1fr auto;
+        gap: var(--spacing-xs);
+    }
+    
+    .ranking-item .project-color,
+    .ranking-item .project-percentage {
+        display: none;
+    }
+    
+    .stat-card-large {
+        padding: var(--spacing-md);
+    }
+    
+    .chart-container {
+        min-height: 100px;
+    }
+}
+
+/* Animation for statistics cards */
+.advanced-stats-section .stat-card-large,
+.advanced-stats-section .goals-section {
+    animation: statsSlideIn 0.6s ease-out;
+}
+
+@keyframes statsSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Enhanced chart styling */
+.chart-container svg {
+    border-radius: var(--radius-sm);
+    background: rgba(255, 255, 255, 0.02);
+}
+
+/* Loading state for charts */
+.chart-container.loading {
+    background: linear-gradient(90deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05), rgba(255,255,255,0.1));
+    background-size: 200% 100%;
+    animation: chartLoading 1.5s infinite;
+}
+
+@keyframes chartLoading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
