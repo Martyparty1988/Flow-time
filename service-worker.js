@@ -1,13 +1,17 @@
 // FlowTime Pro - Service Worker
-// Version 1.0.0
+// Version 1.0.1 - With Icons Support
 
-const CACHE_NAME = 'flowtime-pro-v1';
+const CACHE_NAME = 'flowtime-pro-v1.0.1';
 const urlsToCache = [
     '/',
     '/index.html',
     '/styles.css',
     '/app.js',
-    '/manifest.json'
+    '/manifest.json',
+    '/icons/icon-48.png',
+    '/icons/icon-72.png',
+    '/icons/icon-96.png',
+    '/icons/icon-192.png'
 ];
 
 // Install event
@@ -99,8 +103,8 @@ self.addEventListener('push', event => {
     
     const options = {
         body: event.data ? event.data.text() : 'FlowTime Pro notification',
-        icon: '/icon-192.png',
-        badge: '/badge-72.png',
+        icon: '/icons/icon-192.png',
+        badge: '/icons/icon-72.png',
         vibrate: [200, 100, 200],
          {
             dateOfArrival: Date.now(),
@@ -110,12 +114,12 @@ self.addEventListener('push', event => {
             {
                 action: 'explore',
                 title: 'Otevřít aplikaci',
-                icon: '/images/checkmark.png'
+                icon: '/icons/icon-96.png'
             },
             {
                 action: 'close',
                 title: 'Zavřít',
-                icon: '/images/xmark.png'
+                icon: '/icons/icon-48.png'
             }
         ]
     };
