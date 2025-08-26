@@ -2,39 +2,18 @@
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlowTime Pro</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="advanced-stats.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#000010">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="FlowTime Pro">
-    <meta name="theme-color" content="#000010">
-    <meta name="description" content="Ultra-moderní PWA aplikace pro sledování pracovního času">
-    <title>FlowTime Pro - Sledování času</title>
-    
-    <!-- PWA Manifest -->
-    <link rel="manifest" href="manifest.json">
-    
-    <!-- Apple Touch Icons -->
-    <link rel="apple-touch-icon" sizes="180x180" href="icons/icon-192.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="icons/icon-192.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="icons/icon-192.png">
-    <link rel="apple-touch-icon" sizes="120x120" href="icons/icon-96.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="icons/icon-96.png">
-    <link rel="apple-touch-icon" sizes="76x76" href="icons/icon-96.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="icons/icon-72.png">
-    <link rel="apple-touch-icon" sizes="60x60" href="icons/icon-72.png">
-    <link rel="apple-touch-icon" sizes="57x57" href="icons/icon-72.png">
-    
-    <!-- Standard favicons -->
-    <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-48.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="icons/icon-48.png">
-    
-    <!-- Styles -->
-    <link rel="stylesheet" href="styles.css">
+    <link rel="apple-touch-icon" href="icon-192.png">
 </head>
 <body>
-    <!-- App Container -->
-    <div id="app" class="app-container">
-        
+    <div class="app-container">
         <!-- Install Prompt -->
         <div id="installPrompt" class="install-prompt hidden">
             <div class="install-content">
@@ -48,31 +27,38 @@
             </div>
         </div>
 
-        <!-- Main Timer Section -->
-        <section id="timer" class="screen active">
+        <!-- Timer Screen -->
+        <div id="timer" class="screen active">
             <div class="safe-area">
                 <div class="timer-header">
                     <h1 class="app-title">FlowTime Pro</h1>
+                    
                     <div class="project-selector">
                         <select id="currentProject" class="glass-select">
-                            <option value="1">Web Development</option>
+                            <option value="1">Adršpach</option>
                         </select>
                     </div>
                 </div>
 
                 <div class="timer-display">
                     <div class="timer-circle">
-                        <svg class="timer-progress" viewBox="0 0 200 200">
-                            <circle cx="100" cy="100" r="90" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="4"/>
-                            <circle id="progressCircle" cx="100" cy="100" r="90" fill="none" stroke="url(#timerGradient)" stroke-width="4" stroke-linecap="round" stroke-dasharray="565.48" stroke-dashoffset="565.48" transform="rotate(-90 100 100)"/>
+                        <svg class="timer-progress" width="280" height="280">
+                            <circle cx="140" cy="140" r="90" fill="none" 
+                                    stroke="rgba(255,255,255,0.1)" stroke-width="4"/>
+                            <circle id="progressCircle" cx="140" cy="140" r="90" fill="none" 
+                                    stroke="url(#progressGradient)" stroke-width="4" 
+                                    stroke-linecap="round" stroke-dasharray="565.48" 
+                                    stroke-dashoffset="565.48" 
+                                    style="transform: rotate(-90deg); transform-origin: 140px 140px;"/>
                             <defs>
-                                <linearGradient id="timerGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="0%">
                                     <stop offset="0%" stop-color="#00F5FF"/>
                                     <stop offset="50%" stop-color="#9D4EDD"/>
                                     <stop offset="100%" stop-color="#FF0080"/>
                                 </linearGradient>
                             </defs>
                         </svg>
+                        
                         <div class="timer-content">
                             <div id="timerDisplay" class="timer-time">00:00:00</div>
                             <div id="earningsDisplay" class="timer-earnings">0 Kč</div>
@@ -82,16 +68,16 @@
 
                 <div class="timer-controls">
                     <button id="startBtn" class="control-btn start-btn">
-                        <span class="btn-icon">▶</span>
-                        <span class="btn-text">Start</span>
+                        <div class="btn-icon">▶</div>
+                        <div class="btn-text">Start</div>
                     </button>
                     <button id="pauseBtn" class="control-btn pause-btn hidden">
-                        <span class="btn-icon">⏸</span>
-                        <span class="btn-text">Pauza</span>
+                        <div class="btn-icon">⏸</div>
+                        <div class="btn-text">Pauza</div>
                     </button>
-                    <button id="stopBtn" class="control-btn stop-btn">
-                        <span class="btn-icon">⏹</span>
-                        <span class="btn-text">Stop</span>
+                    <button id="stopBtn" class="control-btn stop-btn hidden">
+                        <div class="btn-icon">⏹</div>
+                        <div class="btn-text">Stop</div>
                     </button>
                 </div>
 
@@ -106,94 +92,57 @@
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
 
-        <!-- Statistics Section -->
-        <section id="statistics" class="screen">
+        <!-- Statistics Screen -->
+        <div id="statistics" class="screen">
             <div class="safe-area">
                 <h2 class="section-title">📊 Statistiky</h2>
                 
                 <div class="stats-cards">
                     <div class="stat-card">
                         <div class="stat-icon">⏱</div>
-                        <div class="stat-content">
-                            <div class="stat-value" id="totalTime">0h 0m</div>
-                            <div class="stat-label">Celkový čas</div>
-                        </div>
+                        <div id="totalTime" class="stat-value">0h 0m</div>
+                        <div class="stat-label">Celkový čas</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-icon">💰</div>
-                        <div class="stat-content">
-                            <div class="stat-value" id="totalEarnings">0 Kč</div>
-                            <div class="stat-label">Celkový výdělek</div>
-                        </div>
+                        <div id="totalEarnings" class="stat-value">0 Kč</div>
+                        <div class="stat-label">Celkový výdělek</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-icon">📈</div>
-                        <div class="stat-content">
-                            <div class="stat-value" id="avgSession">0 min</div>
-                            <div class="stat-label">Průměrná relace</div>
-                        </div>
+                        <div id="avgSession" class="stat-value">0 min</div>
+                        <div class="stat-label">Průměrná relace</div>
                     </div>
                 </div>
 
                 <div class="chart-container">
                     <h3>Týdenní přehled</h3>
-                    <canvas id="weeklyChart" width="300" height="150"></canvas>
+                    <div id="weeklyChart"></div>
                 </div>
 
                 <div class="recent-sessions">
                     <h3>Nedávné relace</h3>
-                    <div id="sessionsList" class="sessions-list">
-                        <!-- Sessions will be populated here -->
-                    </div>
+                    <div id="sessionsList" class="sessions-list"></div>
                 </div>
             </div>
-        </section>
+        </div>
 
-        <!-- Projects Section -->
-        <section id="projects" class="screen">
+        <!-- Projects Screen -->
+        <div id="projects" class="screen">
             <div class="safe-area">
                 <div class="section-header">
                     <h2 class="section-title">🎯 Projekty</h2>
                     <button id="addProjectBtn" class="add-btn">+</button>
                 </div>
                 
-                <div id="projectsList" class="projects-list">
-                    <!-- Projects will be populated here -->
-                </div>
-
-                <!-- Add/Edit Project Modal -->
-                <div id="projectModal" class="modal hidden">
-                    <div class="modal-content">
-                        <h3 id="modalTitle">Nový projekt</h3>
-                        <form id="projectForm">
-                            <div class="form-group">
-                                <label for="projectName">Název projektu</label>
-                                <input type="text" id="projectName" required class="form-input">
-                            </div>
-                            <div class="form-group">
-                                <label for="projectRate">Hodinová sazba (Kč)</label>
-                                <input type="number" id="projectRate" required class="form-input" min="0">
-                            </div>
-                            <div class="form-group">
-                                <label for="projectColor">Barva</label>
-                                <div class="color-picker">
-                                    <input type="color" id="projectColor" value="#00F5FF" class="color-input">
-                                </div>
-                            </div>
-                            <div class="modal-actions">
-                                <button type="submit" class="btn-primary">Uložit</button>
-                                <button type="button" id="cancelProject" class="btn-secondary">Zrušit</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+                <div id="projectsList" class="projects-list"></div>
             </div>
-        </section>
+        </div>
 
-        <!-- Settings Section -->
-        <section id="settings" class="screen">
+        <!-- Settings Screen -->
+        <div id="settings" class="screen">
             <div class="safe-area">
                 <h2 class="section-title">⚙ Nastavení</h2>
                 
@@ -202,27 +151,20 @@
                         <h3>Obecné</h3>
                         <div class="setting-item">
                             <label for="defaultRate">Výchozí hodinová sazba (Kč)</label>
-                            <input type="number" id="defaultRate" class="form-input" min="0" value="200">
+                            <input type="number" id="defaultRate" class="form-input" value="200" min="1">
                         </div>
                         <div class="setting-item">
                             <label class="toggle-label">
+                                <span>Automatické ukládání</span>
                                 <input type="checkbox" id="autoSave" class="toggle-input" checked>
-                                <span class="toggle-slider"></span>
-                                Automatické ukládání
+                                <div class="toggle-slider"></div>
                             </label>
                         </div>
                         <div class="setting-item">
                             <label class="toggle-label">
+                                <span>Notifikace</span>
                                 <input type="checkbox" id="notifications" class="toggle-input" checked>
-                                <span class="toggle-slider"></span>
-                                Notifikace
-                            </label>
-                        </div>
-                        <div class="setting-item">
-                            <label class="toggle-label">
-                                <input type="checkbox" id="hapticFeedback" class="toggle-input" checked>
-                                <span class="toggle-slider"></span>
-                                Haptická odezva
+                                <div class="toggle-slider"></div>
                             </label>
                         </div>
                     </div>
@@ -230,8 +172,6 @@
                     <div class="setting-group">
                         <h3>Data</h3>
                         <button id="exportData" class="btn-secondary full-width">📤 Exportovat data</button>
-                        <input type="file" id="importData" accept=".json" style="display: none;">
-                        <button id="importDataBtn" class="btn-secondary full-width">📥 Importovat data</button>
                         <button id="clearData" class="btn-danger full-width">🗑 Vymazat všechna data</button>
                     </div>
 
@@ -240,218 +180,81 @@
                         <div class="app-info">
                             <p><strong>FlowTime Pro</strong></p>
                             <p>Verze 1.0.0</p>
-                            <p>Ultra-moderní pracovní docházka od mistra Mártyho </p>
-                            <p>🚀 PWA aplikace s offline funkcionalitou</p>
-                            <p>💎 Glassmorphism UI/UX design</p>
+                            <p>Ultra-moderní sledování času</p>
+                        </div>
+                    </div>
+
+                    <!-- Nová sekce O vývojáři -->
+                    <div class="about-developer">
+                        <h3>⚡ O vývojáři</h3>
+                        <div class="developer-info">
+                            <div class="developer-quote">
+                                "Made by Márty: vypadá líp než on, funguje líp než kalendář v pondělí ráno."
+                            </div>
+                            <div class="developer-details">
+                                <strong>Márty</strong> - Full-stack vývojář s vášní pro moderní technologie.<br>
+                                Specializuje se na PWA aplikace, UI/UX design a produktivní nástroje.
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </section>
-
-        <!-- Bottom Navigation -->
-        <nav class="bottom-nav">
-            <button class="nav-btn active" data-screen="timer">
-                <span class="nav-icon">⏱</span>
-                <span class="nav-label">Časovač</span>
-            </button>
-            <button class="nav-btn" data-screen="statistics">
-                <span class="nav-icon">📊</span>
-                <span class="nav-label">Statistiky</span>
-            </button>
-            <button class="nav-btn" data-screen="projects">
-                <span class="nav-icon">🎯</span>
-                <span class="nav-label">Projekty</span>
-            </button>
-            <button class="nav-btn" data-screen="settings">
-                <span class="nav-icon">⚙</span>
-                <span class="nav-label">Nastavení</span>
-            </button>
-        </nav>
-
-        <!-- Status indicator -->
-        <div id="statusIndicator" class="status-indicator hidden">
-            <span class="status-text">Offline</span>
-        </div>
-
-        <!-- Loading Screen -->
-        <div id="loadingScreen" class="loading-screen">
-            <div class="loading-content">
-                <div class="loading-icon">
-                    <svg width="60" height="60" viewBox="0 0 60 60" fill="none">
-                        <circle cx="30" cy="30" r="25" stroke="url(#loadingGradient)" stroke-width="4" stroke-linecap="round" stroke-dasharray="157" stroke-dashoffset="157">
-                            <animate attributeName="stroke-dashoffset" dur="2s" values="157;0;157" repeatCount="indefinite"/>
-                        </circle>
-                        <defs>
-                            <linearGradient id="loadingGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                                <stop offset="0%" stop-color="#00F5FF"/>
-                                <stop offset="50%" stop-color="#9D4EDD"/>
-                                <stop offset="100%" stop-color="#FF0080"/>
-                            </linearGradient>
-                        </defs>
-                    </svg>
-                </div>
-                <h2>FlowTime Pro</h2>
-                <p>Načítání...</p>
-            </div>
         </div>
     </div>
 
-    <!-- Scripts -->
+    <!-- Project Modal -->
+    <div id="projectModal" class="modal hidden">
+        <div class="modal-content">
+            <h3 id="modalTitle">Nový projekt</h3>
+            <form id="projectForm">
+                <div class="form-group">
+                    <label for="projectName">Název projektu</label>
+                    <input type="text" id="projectName" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label for="projectRate">Hodinová sazba (Kč)</label>
+                    <input type="number" id="projectRate" class="form-input" min="1" required>
+                </div>
+                <div class="form-group">
+                    <label for="projectColor">Barva</label>
+                    <div class="color-picker">
+                        <input type="color" id="projectColor" class="color-input" value="#00F5FF">
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="submit" class="btn-primary">Uložit</button>
+                    <button type="button" id="cancelProject" class="btn-secondary">Zrušit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <button class="nav-btn active" data-screen="timer">
+            <div class="nav-icon">⏱</div>
+            <div class="nav-label">Časovač</div>
+        </button>
+        <button class="nav-btn" data-screen="statistics">
+            <div class="nav-icon">📊</div>
+            <div class="nav-label">Statistiky</div>
+        </button>
+        <button class="nav-btn" data-screen="projects">
+            <div class="nav-icon">🎯</div>
+            <div class="nav-label">Projekty</div>
+        </button>
+        <button class="nav-btn" data-screen="settings">
+            <div class="nav-icon">⚙</div>
+            <div class="nav-label">Nastavení</div>
+        </button>
+    </nav>
+
+    <!-- Status Indicator -->
+    <div id="statusIndicator" class="status-indicator hidden">
+        <span class="status-text">Offline</span>
+    </div>
+
+    <script src="statistics.js"></script>
     <script src="app.js"></script>
-    <script>
-        // Register Service Worker
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('service-worker.js')
-                    .then((registration) => {
-                        console.log('SW registered successfully: ', registration);
-                        
-                        // Check for updates
-                        registration.addEventListener('updatefound', () => {
-                            const newWorker = registration.installing;
-                            newWorker.addEventListener('statechange', () => {
-                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                                    // New version available
-                                    if (confirm('Nová verze aplikace je k dispozici. Chcete ji načíst?')) {
-                                        window.location.reload();
-                                    }
-                                }
-                            });
-                        });
-                    })
-                    .catch((registrationError) => {
-                        console.log('SW registration failed: ', registrationError);
-                    });
-            });
-        }
-
-        // Handle install prompt
-        let deferredPrompt;
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            
-            // Show custom install button after delay
-            setTimeout(() => {
-                const installPrompt = document.getElementById('installPrompt');
-                if (installPrompt && !window.matchMedia('(display-mode: standalone)').matches) {
-                    installPrompt.classList.remove('hidden');
-                }
-            }, 5000);
-        });
-
-        // Handle app installed
-        window.addEventListener('appinstalled', () => {
-            console.log('FlowTime Pro was installed successfully');
-            const installPrompt = document.getElementById('installPrompt');
-            if (installPrompt) {
-                installPrompt.classList.add('hidden');
-            }
-            deferredPrompt = null;
-        });
-
-        // Check if app is running in standalone mode
-        if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
-            console.log('App is running in standalone mode');
-            document.body.classList.add('standalone');
-        }
-
-        // Hide loading screen when app is ready
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                const loadingScreen = document.getElementById('loadingScreen');
-                if (loadingScreen) {
-                    loadingScreen.style.opacity = '0';
-                    setTimeout(() => {
-                        loadingScreen.style.display = 'none';
-                    }, 500);
-                }
-            }, 1500);
-        });
-
-        // Handle keyboard shortcuts
-        document.addEventListener('keydown', (e) => {
-            // Space = start/pause timer
-            if (e.code === 'Space' && !e.target.matches('input, textarea, select')) {
-                e.preventDefault();
-                const startBtn = document.getElementById('startBtn');
-                const pauseBtn = document.getElementById('pauseBtn');
-                
-                if (!startBtn.classList.contains('hidden')) {
-                    startBtn.click();
-                } else if (!pauseBtn.classList.contains('hidden')) {
-                    pauseBtn.click();
-                }
-            }
-            
-            // Numbers 1-4 for navigation
-            if (e.key >= '1' && e.key <= '4' && !e.target.matches('input, textarea, select')) {
-                const navBtns = document.querySelectorAll('.nav-btn');
-                const targetBtn = navBtns[parseInt(e.key) - 1];
-                if (targetBtn) {
-                    targetBtn.click();
-                }
-            }
-        });
-
-        // Handle visibility changes (app goes background/foreground)
-        document.addEventListener('visibilitychange', () => {
-            if (document.hidden) {
-                console.log('App went to background');
-            } else {
-                console.log('App came to foreground');
-                // Refresh timer display if running
-                if (window.app?.timer.isRunning) {
-                    window.app.updateTimer();
-                }
-            }
-        });
-
-        // Handle online/offline events
-        window.addEventListener('online', () => {
-            const statusIndicator = document.getElementById('statusIndicator');
-            if (statusIndicator) {
-                statusIndicator.classList.add('hidden');
-            }
-            console.log('App is online');
-        });
-
-        window.addEventListener('offline', () => {
-            const statusIndicator = document.getElementById('statusIndicator');
-            if (statusIndicator) {
-                statusIndicator.classList.remove('hidden');
-                statusIndicator.querySelector('.status-text').textContent = 'Offline režim';
-            }
-            console.log('App is offline');
-        });
-
-        // Prevent zoom on iOS
-        document.addEventListener('touchstart', (e) => {
-            if (e.touches.length > 1) {
-                e.preventDefault();
-            }
-        });
-
-        // Prevent context menu on long press
-        document.addEventListener('contextmenu', (e) => {
-            e.preventDefault();
-        });
-
-        // Handle safe area adjustments
-        function updateSafeArea() {
-            const root = document.documentElement;
-            if (CSS.supports('padding: env(safe-area-inset-top)')) {
-                root.style.setProperty('--safe-top', 'env(safe-area-inset-top)');
-                root.style.setProperty('--safe-bottom', 'env(safe-area-inset-bottom)');
-                root.style.setProperty('--safe-left', 'env(safe-area-inset-left)');
-                root.style.setProperty('--safe-right', 'env(safe-area-inset-right)');
-            }
-        }
-        
-        updateSafeArea();
-        window.addEventListener('orientationchange', updateSafeArea);
-        window.addEventListener('resize', updateSafeArea);
-    </script>
 </body>
 </html>
