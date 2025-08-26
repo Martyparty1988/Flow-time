@@ -93,7 +93,7 @@ class FlowTimeApp {
         try {
             localStorage.setItem('flowtime-data', JSON.stringify(this.data));
         } catch (e) {
-            console.error('Failed to save data:', e);
+            console.error('Failed to save ', e);
         }
     }
 
@@ -515,6 +515,11 @@ class FlowTimeApp {
         this.updateStatistics();
         this.updateSettings();
         this.updateTodayStats();
+        // Load statistics module if available
+        if (window.Statistics) {
+            this.statistics = new window.Statistics(this);
+            this.statistics.updateAdvancedStats();
+        }
     }
 
     updateProjectsList() {
@@ -688,6 +693,10 @@ class FlowTimeApp {
         // Update statistics when switching to stats screen
         if (screenName === 'statistics') {
             this.updateStatistics();
+            // Update advanced statistics if module is loaded
+            if (this.statistics) {
+                this.statistics.updateAdvancedStats();
+            }
         }
     }
 
