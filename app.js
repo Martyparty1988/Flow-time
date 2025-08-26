@@ -40,7 +40,6 @@ class FlowTimeApp {
         this.setupEventListeners();
         this.setupPWA();
         this.updateUI();
-        
         // Show install prompt after delay
         setTimeout(() => this.showInstallPrompt(), 3000);
         console.log('FlowTime Pro initialized successfully');
@@ -57,31 +56,31 @@ class FlowTimeApp {
                 console.warn('Failed to parse saved data, using defaults');
             }
         }
-        
+
         // Ensure we have default projects if none exist
         if (this.data.projects.length === 0) {
             this.data.projects = [
                 {
                     id: 1,
-                    name: "Adršpach",
+                    name: "Web Development",
                     color: "#00F5FF",
-                    hourlyRate: 200,
+                    hourlyRate: 250,
                     totalTime: 0,
                     totalEarnings: 0
                 },
                 {
                     id: 2,
-                    name: "Pivo ",
-                    color: "#FF0080", 
+                    name: "Consultation",
+                    color: "#FF0080",
                     hourlyRate: 200,
                     totalTime: 0,
                     totalEarnings: 0
                 },
                 {
                     id: 3,
-                    name: "Burger fest",
+                    name: "Database Design",
                     color: "#9D4EDD",
-                    hourlyRate: 200,
+                    hourlyRate: 300,
                     totalTime: 0,
                     totalEarnings: 0
                 }
@@ -94,7 +93,7 @@ class FlowTimeApp {
         try {
             localStorage.setItem('flowtime-data', JSON.stringify(this.data));
         } catch (e) {
-            console.error('Failed to save ', e);
+            console.error('Failed to save data:', e);
         }
     }
 
@@ -267,7 +266,6 @@ class FlowTimeApp {
 
         this.timer.isRunning = true;
         this.timer.intervalId = setInterval(() => this.updateTimer(), 100);
-        
         this.updateTimerUI();
         this.hapticFeedback();
 
@@ -281,7 +279,7 @@ class FlowTimeApp {
         this.timer.isRunning = false;
         this.timer.isPaused = true;
         this.timer.pausedTime = Date.now() - this.timer.startTime;
-        
+
         if (this.timer.intervalId) {
             clearInterval(this.timer.intervalId);
             this.timer.intervalId = null;
@@ -315,6 +313,8 @@ class FlowTimeApp {
 
         this.updateTimerUI();
         this.updateStatistics();
+        // OPRAVA: Přidáno volání updateTodayStats() po zastavení timeru
+        this.updateTodayStats();
         this.hapticFeedback();
         this.releaseWakeLock();
     }
@@ -337,7 +337,7 @@ class FlowTimeApp {
         const currentProject = this.getCurrentProject();
         const hours = this.timer.currentSession / (1000 * 60 * 60);
         const earnings = hours * currentProject.hourlyRate;
-        
+
         if (this.elements.earningsDisplay) {
             this.elements.earningsDisplay.textContent = `${Math.round(earnings)} Kč`;
         }
@@ -351,7 +351,7 @@ class FlowTimeApp {
         const progress = Math.min(this.timer.currentSession / maxTime, 1);
         const circumference = 565.48; // 2 * π * 90
         const offset = circumference - (progress * circumference);
-        
+
         this.elements.progressCircle.style.strokeDashoffset = offset;
     }
 
@@ -407,6 +407,9 @@ class FlowTimeApp {
             this.saveData();
         }
 
+        // OPRAVA: Přidáno volání updateTodayStats() po uložení relace
+        this.updateTodayStats();
+
         this.showNotification(`Relace uložena: ${this.formatTime(duration)}`);
     }
 
@@ -423,7 +426,7 @@ class FlowTimeApp {
     // Project Management
     showProjectModal(projectId = null) {
         this.currentEditProjectId = projectId;
-        
+
         if (projectId) {
             const project = this.data.projects.find(p => p.id === projectId);
             if (project) {
@@ -520,19 +523,15 @@ class FlowTimeApp {
         this.elements.projectsList.innerHTML = this.data.projects.map(project => `
             <div class="project-card">
                 <div class="project-info">
-                    <div class="project-color" style="background-color: ${project.color}"></div>
+                    <div class="project-color" style="color: ${project.color}"></div>
                     <div class="project-details">
                         <h3>${project.name}</h3>
                         <p>${project.hourlyRate} Kč/h • ${this.formatTime(project.totalTime)}</p>
                     </div>
                 </div>
                 <div class="project-actions">
-                    <button class="action-btn" onclick="app.showProjectModal(${project.id})" title="Upravit">
-                        ✏️
-                    </button>
-                    <button class="action-btn" onclick="app.deleteProject(${project.id})" title="Smazat">
-                        🗑️
-                    </button>
+                    <button class="action-btn" onclick="window.app.showProjectModal(${project.id})">✏</button>
+                    <button class="action-btn" onclick="window.app.deleteProject(${project.id})">🗑</button>
                 </div>
             </div>
         `).join('');
@@ -553,14 +552,11 @@ class FlowTimeApp {
     }
 
     updateStatistics() {
-        // Calculate totals
         const totalTime = this.data.projects.reduce((sum, p) => sum + p.totalTime, 0);
         const totalEarnings = this.data.projects.reduce((sum, p) => sum + p.totalEarnings, 0);
-        const avgSession = this.data.sessions.length > 0 
-            ? this.data.sessions.reduce((sum, s) => sum + s.duration, 0) / this.data.sessions.length 
-            : 0;
+        const avgSession = this.data.sessions.length > 0 ? 
+            totalTime / this.data.sessions.length : 0;
 
-        // Update UI
         if (this.elements.totalTime) {
             this.elements.totalTime.textContent = this.formatTime(totalTime);
         }
@@ -572,92 +568,7 @@ class FlowTimeApp {
         }
 
         this.updateSessionsList();
-        this.updateChart();
-    }
-
-    updateSessionsList() {
-        if (!this.elements.sessionsList) return;
-
-        const recentSessions = this.data.sessions
-            .slice(-10)
-            .reverse();
-
-        this.elements.sessionsList.innerHTML = recentSessions.map(session => {
-            const project = this.data.projects.find(p => p.id === session.projectId);
-            return `
-                <div class="session-item">
-                    <div class="session-info-left">
-                        <div class="session-project">${project ? project.name : 'Neznámý projekt'}</div>
-                        <div class="session-date">${this.formatDate(session.date)}</div>
-                    </div>
-                    <div class="session-stats">
-                        <div class="session-duration">${this.formatTime(session.duration)}</div>
-                        <div class="session-earnings">${session.earnings} Kč</div>
-                    </div>
-                </div>
-            `;
-        }).join('');
-    }
-
-    updateChart() {
-        if (!this.elements.weeklyChart) return;
-
-        const canvas = this.elements.weeklyChart;
-        const ctx = canvas.getContext('2d');
-        
-        // Simple bar chart for weekly data
-        const weeklyData = this.getWeeklyData();
-        
-        // Clear canvas
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
-        // Draw bars
-        const barWidth = canvas.width / 7;
-        const maxValue = Math.max(...weeklyData.map(d => d.duration)) || 1;
-        
-        weeklyData.forEach((data, index) => {
-            const barHeight = (data.duration / maxValue) * (canvas.height - 40);
-            const x = index * barWidth;
-            const y = canvas.height - barHeight - 20;
-            
-            // Create gradient
-            const gradient = ctx.createLinearGradient(0, y, 0, y + barHeight);
-            gradient.addColorStop(0, '#00F5FF');
-            gradient.addColorStop(0.5, '#9D4EDD');
-            gradient.addColorStop(1, '#FF0080');
-            
-            ctx.fillStyle = gradient;
-            ctx.fillRect(x + 5, y, barWidth - 10, barHeight);
-            
-            // Day label
-            ctx.fillStyle = '#fff';
-            ctx.font = '12px SF Pro Text';
-            ctx.textAlign = 'center';
-            ctx.fillText(data.day, x + barWidth/2, canvas.height - 5);
-        });
-    }
-
-    getWeeklyData() {
-        const days = ['Po', 'Út', 'St', 'Čt', 'Pá', 'So', 'Ne'];
-        const today = new Date();
-        const weekData = [];
-        
-        for (let i = 6; i >= 0; i--) {
-            const date = new Date(today);
-            date.setDate(today.getDate() - i);
-            const dateStr = date.toISOString().split('T')[0];
-            
-            const daySession = this.data.sessions
-                .filter(s => s.date === dateStr)
-                .reduce((sum, s) => sum + s.duration, 0);
-            
-            weekData.push({
-                day: days[date.getDay() === 0 ? 6 : date.getDay() - 1],
-                duration: daySession
-            });
-        }
-        
-        return weekData;
+        this.updateWeeklyChart();
     }
 
     updateTodayStats() {
@@ -675,6 +586,72 @@ class FlowTimeApp {
         }
     }
 
+    updateSessionsList() {
+        if (!this.elements.sessionsList) return;
+
+        const recentSessions = this.data.sessions.slice(-10).reverse();
+        
+        this.elements.sessionsList.innerHTML = recentSessions.map(session => {
+            const project = this.data.projects.find(p => p.id === session.projectId);
+            return `
+                <div class="session-item">
+                    <div class="session-info-left">
+                        <div class="session-project">${project ? project.name : 'Neznámý projekt'}</div>
+                        <div class="session-date">${this.formatDate(session.date)}</div>
+                    </div>
+                    <div class="session-stats">
+                        <div class="session-duration">${this.formatTime(session.duration)}</div>
+                        <div class="session-earnings">${session.earnings} Kč</div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    updateWeeklyChart() {
+        if (!this.elements.weeklyChart) return;
+
+        // Simple bar chart for weekly overview
+        const last7Days = [];
+        for (let i = 6; i >= 0; i--) {
+            const date = new Date();
+            date.setDate(date.getDate() - i);
+            last7Days.push(date.toISOString().split('T')[0]);
+        }
+
+        const weeklyData = last7Days.map(date => {
+            const daySessions = this.data.sessions.filter(s => s.date === date);
+            return daySessions.reduce((sum, s) => sum + s.duration, 0) / (1000 * 60 * 60); // Convert to hours
+        });
+
+        const maxHours = Math.max(...weeklyData, 1);
+        
+        this.elements.weeklyChart.innerHTML = `
+            <svg width="100%" height="120" viewBox="0 0 280 120">
+                ${weeklyData.map((hours, index) => {
+                    const barHeight = (hours / maxHours) * 100;
+                    const x = index * 40 + 10;
+                    const y = 110 - barHeight;
+                    
+                    return `
+                        <rect x="${x}" y="${y}" width="30" height="${barHeight}" 
+                              fill="url(#gradient)" rx="4"/>
+                        <text x="${x + 15}" y="125" text-anchor="middle" 
+                              fill="rgba(255,255,255,0.7)" font-size="10">
+                            ${['Po', 'Út', 'St', 'Čt', 'Pá', 'So', 'Ne'][index]}
+                        </text>
+                    `;
+                }).join('')}
+                <defs>
+                    <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#00F5FF"/>
+                        <stop offset="100%" stop-color="#9D4EDD"/>
+                    </linearGradient>
+                </defs>
+            </svg>
+        `;
+    }
+
     updateSettings() {
         if (this.elements.defaultRate) {
             this.elements.defaultRate.value = this.data.settings.defaultHourlyRate;
@@ -689,66 +666,29 @@ class FlowTimeApp {
 
     // Navigation
     switchScreen(screenName) {
-        // Update navigation
-        this.elements.navBtns.forEach(btn => {
-            btn.classList.toggle('active', btn.dataset.screen === screenName);
+        // Hide all screens
+        this.elements.screens?.forEach(screen => {
+            screen.classList.remove('active');
         });
 
-        // Update screens
-        this.elements.screens.forEach(screen => {
-            screen.classList.toggle('active', screen.id === screenName);
-        });
-
-        this.hapticFeedback();
-    }
-
-    // Utility Functions
-    formatTime(milliseconds) {
-        const seconds = Math.floor(milliseconds / 1000);
-        const hours = Math.floor(seconds / 3600);
-        const minutes = Math.floor((seconds % 3600) / 60);
-        const remainingSeconds = seconds % 60;
-
-        return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
-    }
-
-    formatDate(dateString) {
-        const date = new Date(dateString);
-        const today = new Date();
-        const yesterday = new Date(today);
-        yesterday.setDate(yesterday.getDate() - 1);
-
-        if (date.toDateString() === today.toDateString()) {
-            return 'Dnes';
-        } else if (date.toDateString() === yesterday.toDateString()) {
-            return 'Včera';
-        } else {
-            return date.toLocaleDateString('cs-CZ');
+        // Show selected screen
+        const targetScreen = document.getElementById(screenName);
+        if (targetScreen) {
+            targetScreen.classList.add('active');
         }
-    }
 
-    hapticFeedback() {
-        if (this.data.settings.hapticFeedback && 'vibrate' in navigator) {
-            navigator.vibrate(50);
-        }
-    }
-
-    showNotification(message) {
-        if (this.data.settings.notifications && 'Notification' in window) {
-            if (Notification.permission === 'granted') {
-                new Notification('FlowTime Pro', {
-                    body: message,
-                    icon: 'image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIuMCA1MTIuMCI+PC9zdmc+'
-                });
-            } else if (Notification.permission !== 'denied') {
-                Notification.requestPermission().then(permission => {
-                    if (permission === 'granted') {
-                        this.showNotification(message);
-                    }
-                });
+        // Update nav buttons
+        this.elements.navBtns?.forEach(btn => {
+            btn.classList.remove('active');
+            if (btn.dataset.screen === screenName) {
+                btn.classList.add('active');
             }
+        });
+
+        // Update statistics when switching to stats screen
+        if (screenName === 'statistics') {
+            this.updateStatistics();
         }
-        console.log('Notification:', message);
     }
 
     // PWA Functions
@@ -774,15 +714,62 @@ class FlowTimeApp {
         this.dismissInstallPrompt();
     }
 
-    // Wake Lock API
+    // Utility Functions
+    formatTime(milliseconds) {
+        if (!milliseconds || milliseconds < 0) return '0 min';
+        
+        const totalSeconds = Math.floor(milliseconds / 1000);
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
+
+        if (hours > 0) {
+            return `${hours}h ${minutes}m`;
+        } else if (minutes > 0) {
+            return `${minutes} min`;
+        } else {
+            return `${seconds}s`;
+        }
+    }
+
+    formatDate(dateString) {
+        const date = new Date(dateString);
+        const today = new Date();
+        const yesterday = new Date(today);
+        yesterday.setDate(yesterday.getDate() - 1);
+
+        if (dateString === today.toISOString().split('T')[0]) {
+            return 'Dnes';
+        } else if (dateString === yesterday.toISOString().split('T')[0]) {
+            return 'Včera';
+        } else {
+            return date.toLocaleDateString('cs-CZ');
+        }
+    }
+
+    showNotification(message) {
+        if ('Notification' in window && Notification.permission === 'granted') {
+            new Notification('FlowTime Pro', { body: message });
+        }
+        
+        // Also show in-app notification
+        console.log('Notification:', message);
+    }
+
+    hapticFeedback() {
+        if ('vibrate' in navigator && this.data.settings.hapticFeedback) {
+            navigator.vibrate(50);
+        }
+    }
+
     async requestWakeLock() {
-        try {
-            if ('wakeLock' in navigator) {
+        if ('wakeLock' in navigator) {
+            try {
                 this.wakeLock = await navigator.wakeLock.request('screen');
                 console.log('Wake lock acquired');
+            } catch (e) {
+                console.log('Wake lock failed:', e);
             }
-        } catch (error) {
-            console.log('Wake lock failed:', error);
         }
     }
 
@@ -794,32 +781,20 @@ class FlowTimeApp {
         }
     }
 
-    // Data Management
     exportData() {
-        const dataToExport = {
-            projects: this.data.projects,
-            sessions: this.data.sessions,
-            settings: this.data.settings,
-            exportDate: new Date().toISOString()
-        };
-
-        const dataStr = JSON.stringify(dataToExport, null, 2);
-        const dataBlob = new Blob([dataStr], {type: 'application/json'});
-
+        const dataBlob = new Blob([JSON.stringify(this.data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(dataBlob);
         const link = document.createElement('a');
-        link.href = URL.createObjectURL(dataBlob);
-        link.download = `flowtime-backup-${new Date().toISOString().split('T')[0]}.json`;
+        link.href = url;
+        link.download = `flowtime-data-${new Date().toISOString().split('T')[0]}.json`;
         link.click();
-
-        this.showNotification('Data exportována');
+        URL.revokeObjectURL(url);
     }
 
     clearAllData() {
-        if (confirm('POZOR: Tato akce smaže všechna data včetně projektů, relací a nastavení. Chcete pokračovat?')) {
-            if (confirm('Jste si opravdu jisti? Tato akce se nedá vrátit zpět.')) {
-                localStorage.removeItem('flowtime-data');
-                location.reload();
-            }
+        if (confirm('Opravdu chcete vymazat všechna data? Tato akce je nevratná.')) {
+            localStorage.removeItem('flowtime-data');
+            location.reload();
         }
     }
 }
@@ -829,7 +804,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.app = new FlowTimeApp();
 });
 
-// Handle page visibility changes
+// Handle app visibility changes
 document.addEventListener('visibilitychange', () => {
     if (document.hidden && window.app?.timer.isRunning) {
         // App is hidden and timer is running
