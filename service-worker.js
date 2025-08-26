@@ -1,23 +1,21 @@
 // FlowTime Pro - Service Worker
-// Version 1.0.1 - With Icons Support
+// Version 1.1.0
 
-const CACHE_NAME = 'flowtime-pro-v1.0.1';
+const CACHE_NAME = 'flowtime-pro-v2';
+
 const urlsToCache = [
     '/',
     '/index.html',
     '/styles.css',
+    '/advanced-stats.css',
     '/app.js',
-    '/manifest.json',
-    '/icons/icon-48.png',
-    '/icons/icon-72.png',
-    '/icons/icon-96.png',
-    '/icons/icon-192.png'
+    '/statistics.js',
+    '/manifest.json'
 ];
 
 // Install event
 self.addEventListener('install', event => {
     console.log('Service Worker installing...');
-    
     event.waitUntil(
         caches.open(CACHE_NAME)
             .then(cache => {
@@ -34,7 +32,6 @@ self.addEventListener('install', event => {
 // Activate event
 self.addEventListener('activate', event => {
     console.log('Service Worker activating...');
-    
     event.waitUntil(
         caches.keys().then(cacheNames => {
             return Promise.all(
@@ -89,7 +86,6 @@ self.addEventListener('fetch', event => {
 self.addEventListener('sync', event => {
     if (event.tag === 'background-sync') {
         console.log('Background sync triggered');
-        
         event.waitUntil(
             // Perform background tasks here
             doBackgroundSync()
@@ -100,11 +96,11 @@ self.addEventListener('sync', event => {
 // Push notifications
 self.addEventListener('push', event => {
     console.log('Push message received');
-    
+
     const options = {
         body: event.data ? event.data.text() : 'FlowTime Pro notification',
-        icon: '/icons/icon-192.png',
-        badge: '/icons/icon-72.png',
+        icon: '/icon-192.png',
+        badge: '/badge-72.png',
         vibrate: [200, 100, 200],
          {
             dateOfArrival: Date.now(),
@@ -114,12 +110,12 @@ self.addEventListener('push', event => {
             {
                 action: 'explore',
                 title: 'Otevřít aplikaci',
-                icon: '/icons/icon-96.png'
+                icon: '/images/checkmark.png'
             },
             {
                 action: 'close',
                 title: 'Zavřít',
-                icon: '/icons/icon-48.png'
+                icon: '/images/xmark.png'
             }
         ]
     };
@@ -132,7 +128,6 @@ self.addEventListener('push', event => {
 // Notification click
 self.addEventListener('notificationclick', event => {
     console.log('Notification clicked');
-    
     event.notification.close();
 
     if (event.action === 'explore') {
@@ -154,11 +149,9 @@ self.addEventListener('notificationclick', event => {
 async function doBackgroundSync() {
     try {
         console.log('Performing background sync...');
-        
         // Here you could sync data with server
         // For now, just log the action
         console.log('Background sync completed');
-        
         return Promise.resolve();
     } catch (error) {
         console.error('Background sync failed:', error);
@@ -169,7 +162,6 @@ async function doBackgroundSync() {
 // Handle message from main thread
 self.addEventListener('message', event => {
     console.log('Service Worker received message:', event.data);
-    
     if (event.data && event.data.type === 'SKIP_WAITING') {
         self.skipWaiting();
     }
