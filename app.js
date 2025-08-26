@@ -64,7 +64,7 @@ class FlowTimeApp {
                     id: 1,
                     name: "Adršpach",
                     color: "#00F5FF",
-                    hourlyRate: 250,
+                    hourlyRate: 200,
                     totalTime: 0,
                     totalEarnings: 0
                 },
@@ -80,7 +80,7 @@ class FlowTimeApp {
                     id: 3,
                     name: "Pivo",
                     color: "#9D4EDD",
-                    hourlyRate: 300,
+                    hourlyRate: 200,
                     totalTime: 0,
                     totalEarnings: 0
                 }
