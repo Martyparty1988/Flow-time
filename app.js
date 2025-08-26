@@ -63,15 +63,15 @@ class FlowTimeApp {
             this.data.projects = [
                 {
                     id: 1,
-                    name: "Web Development",
+                    name: "Adršpach",
                     color: "#00F5FF",
-                    hourlyRate: 250,
+                    hourlyRate: 200,
                     totalTime: 0,
                     totalEarnings: 0
                 },
                 {
                     id: 2,
-                    name: "Consultation",
+                    name: "Pivo ",
                     color: "#FF0080", 
                     hourlyRate: 200,
                     totalTime: 0,
@@ -79,9 +79,9 @@ class FlowTimeApp {
                 },
                 {
                     id: 3,
-                    name: "Database Design",
+                    name: "Burger fest",
                     color: "#9D4EDD",
-                    hourlyRate: 300,
+                    hourlyRate: 200,
                     totalTime: 0,
                     totalEarnings: 0
                 }
