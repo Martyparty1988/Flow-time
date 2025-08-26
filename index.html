@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="FlowTime Pro">
+    <meta name="theme-color" content="#000010">
+    <title>FlowTime Pro - Sledování času</title>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Favicons -->
+    <link rel="icon" type="image/svg+xml" href="image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIuMCA1MTIuMCIgaGVpZ2h0PSI1MTIuMCIgd2lkdGg9IjUxMi4wIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImdyYWQiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjMDBGNUZGIi8+PHN0b3Agb2Zmc2V0PSI1MCUiIHN0b3AtY29sb3I9IiM5RDRFREQiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNGRjAwODAiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48Y2lyY2xlIGN4PSIyNTYiIGN5PSIyNTYiIHI9IjY0IiBmaWxsPSJ1cmwoI2dyYWQpIiBvcGFjaXR5PSIwLjkiLz48cGF0aCBkPSJNNDguMDIgMTUuMjAyVjJMMjUuMzU4TjVLOS42czg4OS40NTl5NTI0ZGpNMTQuODQ1djNMNC43LjYxN1I0NC4wN1FkQnc4VDNWMFUxUnFOM1FqWmpSa1JYcEZiRzVGSWo4aWRYSnNLQ05uY21Ga0tTSXZQand2YzNablBqeDBaWGgwSUhnaU1qVTJJaUI1UFNJek16QWlJSFJsZUhRdFlXNWphRzl5UFNKdGFXUmtiR1VpSUc5d1lXTnBkSGs5SWpBdU9TSWdabWxzYkQwaWJHbG5hSFJuY21GNUtDbGZJa1pzYjNkVWFXMWxJRkJ5YnlJZ2RYSnNLQ05uY21Ga0tTSXZQa" />
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- App Container -->
+    <div id="app" class="app-container">
+        
+        <!-- Install Prompt -->
+        <div id="installPrompt" class="install-prompt hidden">
+            <div class="install-content">
+                <div class="install-icon">⚡</div>
+                <h3>Přidat FlowTime Pro</h3>
+                <p>Nainstalujte si aplikaci pro rychlejší přístup</p>
+                <div class="install-actions">
+                    <button id="installBtn" class="btn-primary">Instalovat</button>
+                    <button id="dismissInstall" class="btn-secondary">Zrušit</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Timer Section -->
+        <section id="timer" class="screen active">
+            <div class="safe-area">
+                <div class="timer-header">
+                    <h1 class="app-title">FlowTime Pro</h1>
+                    <div class="project-selector">
+                        <select id="currentProject" class="glass-select">
+                            <option value="1">Web Development</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="timer-display">
+                    <div class="timer-circle">
+                        <svg class="timer-progress" viewBox="0 0 200 200">
+                            <circle cx="100" cy="100" r="90" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="4"/>
+                            <circle id="progressCircle" cx="100" cy="100" r="90" fill="none" stroke="url(#timerGradient)" stroke-width="4" stroke-linecap="round" stroke-dasharray="565.48" stroke-dashoffset="565.48" transform="rotate(-90 100 100)"/>
+                            <defs>
+                                <linearGradient id="timerGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" stop-color="#00F5FF"/>
+                                    <stop offset="50%" stop-color="#9D4EDD"/>
+                                    <stop offset="100%" stop-color="#FF0080"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                        <div class="timer-content">
+                            <div id="timerDisplay" class="timer-time">00:00:00</div>
+                            <div id="earningsDisplay" class="timer-earnings">0 Kč</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timer-controls">
+                    <button id="startBtn" class="control-btn start-btn">
+                        <span class="btn-icon">▶</span>
+                        <span class="btn-text">Start</span>
+                    </button>
+                    <button id="pauseBtn" class="control-btn pause-btn hidden">
+                        <span class="btn-icon">⏸</span>
+                        <span class="btn-text">Pauza</span>
+                    </button>
+                    <button id="stopBtn" class="control-btn stop-btn">
+                        <span class="btn-icon">⏹</span>
+                        <span class="btn-text">Stop</span>
+                    </button>
+                </div>
+
+                <div class="session-info">
+                    <div class="info-card">
+                        <span class="info-label">Dnešní čas</span>
+                        <span id="todayTime" class="info-value">0 min</span>
+                    </div>
+                    <div class="info-card">
+                        <span class="info-label">Dnešní výdělek</span>
+                        <span id="todayEarnings" class="info-value">0 Kč</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Statistics Section -->
+        <section id="statistics" class="screen">
+            <div class="safe-area">
+                <h2 class="section-title">📊 Statistiky</h2>
+                
+                <div class="stats-cards">
+                    <div class="stat-card">
+                        <div class="stat-icon">⏱</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="totalTime">0h 0m</div>
+                            <div class="stat-label">Celkový čas</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">💰</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="totalEarnings">0 Kč</div>
+                            <div class="stat-label">Celkový výdělek</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📈</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="avgSession">0 min</div>
+                            <div class="stat-label">Průměrná relace</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <h3>Týdenní přehled</h3>
+                    <canvas id="weeklyChart" width="300" height="150"></canvas>
+                </div>
+
+                <div class="recent-sessions">
+                    <h3>Nedávné relace</h3>
+                    <div id="sessionsList" class="sessions-list">
+                        <!-- Sessions will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Projects Section -->
+        <section id="projects" class="screen">
+            <div class="safe-area">
+                <div class="section-header">
+                    <h2 class="section-title">🎯 Projekty</h2>
+                    <button id="addProjectBtn" class="add-btn">+</button>
+                </div>
+                
+                <div id="projectsList" class="projects-list">
+                    <!-- Projects will be populated here -->
+                </div>
+
+                <!-- Add/Edit Project Modal -->
+                <div id="projectModal" class="modal hidden">
+                    <div class="modal-content">
+                        <h3 id="modalTitle">Nový projekt</h3>
+                        <form id="projectForm">
+                            <div class="form-group">
+                                <label for="projectName">Název projektu</label>
+                                <input type="text" id="projectName" required class="form-input">
+                            </div>
+                            <div class="form-group">
+                                <label for="projectRate">Hodinová sazba (Kč)</label>
+                                <input type="number" id="projectRate" required class="form-input" min="0">
+                            </div>
+                            <div class="form-group">
+                                <label for="projectColor">Barva</label>
+                                <div class="color-picker">
+                                    <input type="color" id="projectColor" value="#00F5FF" class="color-input">
+                                </div>
+                            </div>
+                            <div class="modal-actions">
+                                <button type="submit" class="btn-primary">Uložit</button>
+                                <button type="button" id="cancelProject" class="btn-secondary">Zrušit</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Settings Section -->
+        <section id="settings" class="screen">
+            <div class="safe-area">
+                <h2 class="section-title">⚙ Nastavení</h2>
+                
+                <div class="settings-groups">
+                    <div class="setting-group">
+                        <h3>Obecné</h3>
+                        <div class="setting-item">
+                            <label for="defaultRate">Výchozí hodinová sazba (Kč)</label>
+                            <input type="number" id="defaultRate" class="form-input" min="0">
+                        </div>
+                        <div class="setting-item">
+                            <label class="toggle-label">
+                                <input type="checkbox" id="autoSave" class="toggle-input">
+                                <span class="toggle-slider"></span>
+                                Automatické ukládání
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <label class="toggle-label">
+                                <input type="checkbox" id="notifications" class="toggle-input">
+                                <span class="toggle-slider"></span>
+                                Notifikace
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="setting-group">
+                        <h3>Data</h3>
+                        <button id="exportData" class="btn-secondary full-width">📤 Exportovat data</button>
+                        <button id="clearData" class="btn-danger full-width">🗑 Vymazat všechna data</button>
+                    </div>
+
+                    <div class="setting-group">
+                        <h3>O aplikaci</h3>
+                        <div class="app-info">
+                            <p><strong>FlowTime Pro</strong></p>
+                            <p>Verze 1.0.0</p>
+                            <p>Ultra-moderní sledování času</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <button class="nav-btn active" data-screen="timer">
+                <span class="nav-icon">⏱</span>
+                <span class="nav-label">Časovač</span>
+            </button>
+            <button class="nav-btn" data-screen="statistics">
+                <span class="nav-icon">📊</span>
+                <span class="nav-label">Statistiky</span>
+            </button>
+            <button class="nav-btn" data-screen="projects">
+                <span class="nav-icon">🎯</span>
+                <span class="nav-label">Projekty</span>
+            </button>
+            <button class="nav-btn" data-screen="settings">
+                <span class="nav-icon">⚙</span>
+                <span class="nav-label">Nastavení</span>
+            </button>
+        </nav>
+
+        <!-- Status indicator -->
+        <div id="statusIndicator" class="status-indicator hidden">
+            <span class="status-text">Offline</span>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="app.js"></script>
+    <script>
+        // Register Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('service-worker.js')
+                    .then((registration) => {
+                        console.log('SW registered: ', registration);
+                    })
+                    .catch((registrationError) => {
+                        console.log('SW registration failed: ', registrationError);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>
