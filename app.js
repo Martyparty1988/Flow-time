@@ -29,6 +29,7 @@ class FlowTimeApp {
         this.charts = {};
         this.installPromptEvent = null;
         this.currentEditProjectId = null;
+        this.currentEditSessionId = null;
 
         this.init();
     }
@@ -106,6 +107,7 @@ class FlowTimeApp {
         this.elements.startBtn = document.getElementById('startBtn');
         this.elements.pauseBtn = document.getElementById('pauseBtn');
         this.elements.stopBtn = document.getElementById('stopBtn');
+        this.elements.addManualBtn = document.getElementById('addManualBtn');
         this.elements.todayTime = document.getElementById('todayTime');
         this.elements.todayEarnings = document.getElementById('todayEarnings');
 
@@ -126,6 +128,18 @@ class FlowTimeApp {
         this.elements.projectRate = document.getElementById('projectRate');
         this.elements.projectColor = document.getElementById('projectColor');
         this.elements.cancelProject = document.getElementById('cancelProject');
+
+        // Session modal elements
+        this.elements.sessionModal = document.getElementById('sessionModal');
+        this.elements.sessionForm = document.getElementById('sessionForm');
+        this.elements.sessionModalTitle = document.getElementById('sessionModalTitle');
+        this.elements.sessionProject = document.getElementById('sessionProject');
+        this.elements.sessionDate = document.getElementById('sessionDate');
+        this.elements.sessionStartTime = document.getElementById('sessionStartTime');
+        this.elements.sessionEndTime = document.getElementById('sessionEndTime');
+        this.elements.sessionDuration = document.getElementById('sessionDuration');
+        this.elements.sessionNotes = document.getElementById('sessionNotes');
+        this.elements.cancelSession = document.getElementById('cancelSession');
 
         // Settings elements
         this.elements.defaultRate = document.getElementById('defaultRate');
@@ -150,6 +164,7 @@ class FlowTimeApp {
         this.elements.startBtn?.addEventListener('click', () => this.startTimer());
         this.elements.pauseBtn?.addEventListener('click', () => this.pauseTimer());
         this.elements.stopBtn?.addEventListener('click', () => this.stopTimer());
+        this.elements.addManualBtn?.addEventListener('click', () => this.showSessionModal());
 
         // Navigation
         this.elements.navBtns?.forEach(btn => {
@@ -163,6 +178,10 @@ class FlowTimeApp {
         this.elements.addProjectBtn?.addEventListener('click', () => this.showProjectModal());
         this.elements.projectForm?.addEventListener('submit', (e) => this.saveProject(e));
         this.elements.cancelProject?.addEventListener('click', () => this.hideProjectModal());
+
+        // Sessions
+        this.elements.sessionForm?.addEventListener('submit', (e) => this.saveSession(e));
+        this.elements.cancelSession?.addEventListener('click', () => this.hideSessionModal());
 
         // Settings
         this.elements.defaultRate?.addEventListener('change', (e) => {
@@ -187,10 +206,16 @@ class FlowTimeApp {
         this.elements.installBtn?.addEventListener('click', () => this.installApp());
         this.elements.dismissInstall?.addEventListener('click', () => this.dismissInstallPrompt());
 
-        // Modal backdrop click
+        // Modal backdrop clicks
         this.elements.projectModal?.addEventListener('click', (e) => {
             if (e.target === this.elements.projectModal) {
                 this.hideProjectModal();
+            }
+        });
+
+        this.elements.sessionModal?.addEventListener('click', (e) => {
+            if (e.target === this.elements.sessionModal) {
+                this.hideSessionModal();
             }
         });
 
@@ -205,6 +230,10 @@ class FlowTimeApp {
                 }
             }
         });
+
+        // Auto-calculate duration in session modal
+        this.elements.sessionStartTime?.addEventListener('change', () => this.calculateSessionDuration());
+        this.elements.sessionEndTime?.addEventListener('change', () => this.calculateSessionDuration());
     }
 
     setupPWA() {
@@ -296,7 +325,7 @@ class FlowTimeApp {
         const sessionTime = this.timer.isPaused ? this.timer.pausedTime : Date.now() - this.timer.startTime;
         
         if (sessionTime > 5000) { // Only save sessions longer than 5 seconds
-            this.saveSession(sessionTime);
+            this.saveTimerSession(sessionTime);
         }
 
         // Reset timer
@@ -313,7 +342,6 @@ class FlowTimeApp {
 
         this.updateTimerUI();
         this.updateStatistics();
-        // OPRAVA: Přidáno volání updateTodayStats() po zastavení timeru
         this.updateTodayStats();
         this.hapticFeedback();
         this.releaseWakeLock();
@@ -330,7 +358,7 @@ class FlowTimeApp {
     updateTimerDisplay() {
         if (!this.elements.timerDisplay) return;
 
-        const time = this.formatTime(this.timer.currentSession);
+        const time = this.formatTimeForDisplay(this.timer.currentSession);
         this.elements.timerDisplay.textContent = time;
 
         // Update earnings
@@ -349,7 +377,7 @@ class FlowTimeApp {
         // Update progress circle based on session time (max 4 hours = full circle)
         const maxTime = 4 * 60 * 60 * 1000; // 4 hours in milliseconds
         const progress = Math.min(this.timer.currentSession / maxTime, 1);
-        const circumference = 565.48; // 2 * π * 90
+        const circumference = 628.32; // 2 * π * 100 (větší radius pro větší časovač)
         const offset = circumference - (progress * circumference);
 
         this.elements.progressCircle.style.strokeDashoffset = offset;
@@ -379,19 +407,20 @@ class FlowTimeApp {
                 this.elements.earningsDisplay.textContent = '0 Kč';
             }
             if (this.elements.progressCircle) {
-                this.elements.progressCircle.style.strokeDashoffset = '565.48';
+                this.elements.progressCircle.style.strokeDashoffset = '628.32';
             }
         }
     }
 
-    saveSession(duration) {
+    saveTimerSession(duration) {
         const session = {
             id: Date.now(),
             projectId: this.timer.currentProjectId,
             date: new Date().toISOString().split('T')[0],
             duration: duration,
             earnings: this.calculateEarnings(duration),
-            notes: ''
+            notes: '',
+            type: 'timer'
         };
 
         this.data.sessions.push(session);
@@ -407,9 +436,7 @@ class FlowTimeApp {
             this.saveData();
         }
 
-        // OPRAVA: Přidáno volání updateTodayStats() po uložení relace
         this.updateTodayStats();
-
         this.showNotification(`Relace uložena: ${this.formatTime(duration)}`);
     }
 
@@ -421,6 +448,168 @@ class FlowTimeApp {
 
     getCurrentProject() {
         return this.data.projects.find(p => p.id === this.timer.currentProjectId) || this.data.projects[0];
+    }
+
+    // Session Management
+    showSessionModal(sessionId = null) {
+        this.currentEditSessionId = sessionId;
+        const now = new Date();
+
+        if (sessionId) {
+            const session = this.data.sessions.find(s => s.id === sessionId);
+            if (session) {
+                this.elements.sessionModalTitle.textContent = 'Upravit relaci';
+                this.elements.sessionProject.value = session.projectId;
+                this.elements.sessionDate.value = session.date;
+                this.elements.sessionNotes.value = session.notes || '';
+                
+                // Calculate start and end times from duration
+                const sessionDate = new Date(session.date);
+                const endTime = new Date(sessionDate.getTime() + session.duration);
+                
+                this.elements.sessionStartTime.value = this.formatTimeForInput(sessionDate);
+                this.elements.sessionEndTime.value = this.formatTimeForInput(endTime);
+                this.elements.sessionDuration.value = Math.round(session.duration / (1000 * 60)); // minutes
+            }
+        } else {
+            this.elements.sessionModalTitle.textContent = 'Přidat relaci ručně';
+            this.elements.sessionProject.value = this.timer.currentProjectId;
+            this.elements.sessionDate.value = now.toISOString().split('T')[0];
+            this.elements.sessionStartTime.value = this.formatTimeForInput(new Date(now.getTime() - 60 * 60 * 1000)); // 1 hour ago
+            this.elements.sessionEndTime.value = this.formatTimeForInput(now);
+            this.elements.sessionDuration.value = '60'; // 1 hour default
+            this.elements.sessionNotes.value = '';
+        }
+
+        this.updateSessionProjectOptions();
+        this.calculateSessionDuration();
+        this.elements.sessionModal.classList.remove('hidden');
+    }
+
+    hideSessionModal() {
+        this.elements.sessionModal.classList.add('hidden');
+        this.currentEditSessionId = null;
+    }
+
+    updateSessionProjectOptions() {
+        if (!this.elements.sessionProject) return;
+
+        this.elements.sessionProject.innerHTML = this.data.projects.map(project => `
+            <option value="${project.id}">${project.name} (${project.hourlyRate} Kč/h)</option>
+        `).join('');
+    }
+
+    calculateSessionDuration() {
+        const startTime = this.elements.sessionStartTime?.value;
+        const endTime = this.elements.sessionEndTime?.value;
+        
+        if (startTime && endTime) {
+            const start = new Date(`2000-01-01T${startTime}`);
+            const end = new Date(`2000-01-01T${endTime}`);
+            const duration = (end - start) / (1000 * 60); // minutes
+            
+            if (duration > 0) {
+                this.elements.sessionDuration.value = Math.round(duration);
+            }
+        }
+    }
+
+    saveSession(e) {
+        e.preventDefault();
+
+        const projectId = parseInt(this.elements.sessionProject.value);
+        const date = this.elements.sessionDate.value;
+        const duration = parseInt(this.elements.sessionDuration.value) * 60 * 1000; // convert to milliseconds
+        const notes = this.elements.sessionNotes.value.trim();
+
+        if (!projectId || !date || !duration || duration <= 0) {
+            alert('Prosím vyplňte všechna povinná pole');
+            return;
+        }
+
+        const project = this.data.projects.find(p => p.id === projectId);
+        const earnings = Math.round((duration / (1000 * 60 * 60)) * project.hourlyRate);
+
+        if (this.currentEditSessionId) {
+            // Edit existing session
+            const sessionIndex = this.data.sessions.findIndex(s => s.id === this.currentEditSessionId);
+            if (sessionIndex !== -1) {
+                const oldSession = this.data.sessions[sessionIndex];
+                const oldProject = this.data.projects.find(p => p.id === oldSession.projectId);
+                
+                // Remove old values from project totals
+                if (oldProject) {
+                    oldProject.totalTime -= oldSession.duration;
+                    oldProject.totalEarnings -= oldSession.earnings;
+                }
+
+                // Update session
+                this.data.sessions[sessionIndex] = {
+                    ...oldSession,
+                    projectId: projectId,
+                    date: date,
+                    duration: duration,
+                    earnings: earnings,
+                    notes: notes,
+                    type: 'manual'
+                };
+
+                // Add new values to project totals
+                if (project) {
+                    project.totalTime += duration;
+                    project.totalEarnings += earnings;
+                }
+            }
+        } else {
+            // Add new session
+            const session = {
+                id: Date.now(),
+                projectId: projectId,
+                date: date,
+                duration: duration,
+                earnings: earnings,
+                notes: notes,
+                type: 'manual'
+            };
+
+            this.data.sessions.push(session);
+
+            // Update project totals
+            if (project) {
+                project.totalTime += duration;
+                project.totalEarnings += earnings;
+            }
+        }
+
+        this.saveData();
+        this.updateUI();
+        this.hideSessionModal();
+        this.hapticFeedback();
+        
+        this.showNotification(this.currentEditSessionId ? 'Relace upravena' : 'Relace přidána');
+    }
+
+    deleteSession(sessionId) {
+        if (!confirm('Opravdu chcete smazat tuto relaci?')) return;
+
+        const sessionIndex = this.data.sessions.findIndex(s => s.id === sessionId);
+        if (sessionIndex !== -1) {
+            const session = this.data.sessions[sessionIndex];
+            const project = this.data.projects.find(p => p.id === session.projectId);
+
+            // Remove from project totals
+            if (project) {
+                project.totalTime -= session.duration;
+                project.totalEarnings -= session.earnings;
+            }
+
+            // Remove session
+            this.data.sessions.splice(sessionIndex, 1);
+
+            this.saveData();
+            this.updateUI();
+            this.showNotification('Relace smazána');
+        }
     }
 
     // Project Management
@@ -598,15 +787,24 @@ class FlowTimeApp {
         
         this.elements.sessionsList.innerHTML = recentSessions.map(session => {
             const project = this.data.projects.find(p => p.id === session.projectId);
+            const typeIcon = session.type === 'manual' ? '✏️' : '⏱️';
+            
             return `
                 <div class="session-item">
                     <div class="session-info-left">
-                        <div class="session-project">${project ? project.name : 'Neznámý projekt'}</div>
+                        <div class="session-project">
+                            ${typeIcon} ${project ? project.name : 'Neznámý projekt'}
+                        </div>
                         <div class="session-date">${this.formatDate(session.date)}</div>
+                        ${session.notes ? `<div class="session-notes">${session.notes}</div>` : ''}
                     </div>
                     <div class="session-stats">
                         <div class="session-duration">${this.formatTime(session.duration)}</div>
                         <div class="session-earnings">${session.earnings} Kč</div>
+                        <div class="session-actions">
+                            <button class="action-btn-small" onclick="window.app.showSessionModal(${session.id})">✏</button>
+                            <button class="action-btn-small" onclick="window.app.deleteSession(${session.id})">🗑</button>
+                        </div>
                     </div>
                 </div>
             `;
@@ -739,6 +937,21 @@ class FlowTimeApp {
         } else {
             return `${seconds}s`;
         }
+    }
+
+    formatTimeForDisplay(milliseconds) {
+        if (!milliseconds || milliseconds < 0) return '00:00:00';
+        
+        const totalSeconds = Math.floor(milliseconds / 1000);
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
+
+        return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
+
+    formatTimeForInput(date) {
+        return date.toTimeString().slice(0, 5); // HH:MM format
     }
 
     formatDate(dateString) {
