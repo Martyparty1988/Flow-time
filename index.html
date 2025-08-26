@@ -7,13 +7,17 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="FlowTime Pro">
     <meta name="theme-color" content="#000010">
+    <meta name="description" content="Ultra-moderní PWA aplikace pro sledování pracovního času s pokročilými statistikami">
     <title>FlowTime Pro - Sledování času</title>
     
     <!-- PWA Manifest -->
     <link rel="manifest" href="manifest.json">
     
+    <!-- Apple Touch Icons -->
+    <link rel="apple-touch-icon" href="image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDE5MiAxOTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTkyIiByeD0iNDgiIGZpbGw9InVybCgjZ3JhZCkiLz4KPGNpcmNsZSBjeD0iOTYiIGN5PSI5NiIgcj0iNDAiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iOCIgZmlsbD0ibm9uZSIvPgo8cGF0aCBkPSJNOTYgNTZWOTZMMTIwIDEyMCIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSI4IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPGRlZnM+CjxsaW5lYXJHcmFkaWVudCBpZD0iZ3JhZCIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPgo8c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjMDBGNUZGIi8+CjxzdG9wIG9mZnNldD0iNTAlIiBzdG9wLWNvbG9yPSIjOUQ0RUREIi8+CjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iI0ZGMDA4MCIvPgo8L2xpbmVhckdyYWRpZW50Pgo8L2RlZnM+Cjwvc3ZnPg==">
+    
     <!-- Favicons -->
-    <link rel="icon" type="image/svg+xml" href="image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIuMCA1MTIuMCIgaGVpZ2h0PSI1MTIuMCIgd2lkdGg9IjUxMi4wIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImdyYWQiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjMDBGNUZGIi8+PHN0b3Agb2Zmc2V0PSI1MCUiIHN0b3AtY29sb3I9IiM5RDRFREQiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNGRjAwODAiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48Y2lyY2xlIGN4PSIyNTYiIGN5PSIyNTYiIHI9IjY0IiBmaWxsPSJ1cmwoI2dyYWQpIiBvcGFjaXR5PSIwLjkiLz48cGF0aCBkPSJNNDguMDIgMTUuMjAyVjJMMjUuMzU4TjVLOS42czg4OS40NTl5NTI0ZGpNMTQuODQ1djNMNC43LjYxN1I0NC4wN1FkQnc4VDNWMFUxUnFOM1FqWmpSa1JYcEZiRzVGSWo4aWRYSnNLQ05uY21Ga0tTSXZQand2YzNablBqeDBaWGgwSUhnaU1qVTJJaUI1UFNJek16QWlJSFJsZUhRdFlXNWphRzl5UFNKdGFXUmtiR1VpSUc5d1lXTnBkSGs5SWpBdU9TSWdabWxzYkQwaWJHbG5hSFJuY21GNUtDbGZJa1pzYjNkVWFXMWxJRkJ5YnlJZ2RYSnNLQ05uY21Ga0tTSXZQa" />
+    <link rel="icon" type="image/svg+xml" href="image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDgiIGhlaWdodD0iNDgiIHZpZXdCb3g9IjAgMCA0OCA0OCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQ4IiBoZWlnaHQ9IjQ4IiByeD0iMTIiIGZpbGw9InVybCgjZ3JhZCkiLz4KPGNpcmNsZSBjeD0iMjQiIGN5PSIyNCIgcj0iMTAiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMiIgZmlsbD0ibm9uZSIvPgo8cGF0aCBkPSJNMjQgMTRWMjRMMzAgMzAiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CjxkZWZzPgo8bGluZWFyR3JhZGllbnQgaWQ9ImdyYWQiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjAlIj4KPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzAwRjVGRiIvPgo8c3RvcCBvZmZzZXQ9IjUwJSIgc3RvcC1jb2xvcj0iIzlENEVERCIvPgo8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNGRjAwODAiLz4KPC9saW5lYXJHcmFkaWVudD4KPC9kZWZzPgo8L3N2Zz4=">
     
     <!-- Styles -->
     <link rel="stylesheet" href="styles.css">
@@ -189,20 +193,27 @@
                         <h3>Obecné</h3>
                         <div class="setting-item">
                             <label for="defaultRate">Výchozí hodinová sazba (Kč)</label>
-                            <input type="number" id="defaultRate" class="form-input" min="0">
+                            <input type="number" id="defaultRate" class="form-input" min="0" value="200">
                         </div>
                         <div class="setting-item">
                             <label class="toggle-label">
-                                <input type="checkbox" id="autoSave" class="toggle-input">
+                                <input type="checkbox" id="autoSave" class="toggle-input" checked>
                                 <span class="toggle-slider"></span>
                                 Automatické ukládání
                             </label>
                         </div>
                         <div class="setting-item">
                             <label class="toggle-label">
-                                <input type="checkbox" id="notifications" class="toggle-input">
+                                <input type="checkbox" id="notifications" class="toggle-input" checked>
                                 <span class="toggle-slider"></span>
                                 Notifikace
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <label class="toggle-label">
+                                <input type="checkbox" id="hapticFeedback" class="toggle-input" checked>
+                                <span class="toggle-slider"></span>
+                                Haptická odezva
                             </label>
                         </div>
                     </div>
@@ -210,6 +221,8 @@
                     <div class="setting-group">
                         <h3>Data</h3>
                         <button id="exportData" class="btn-secondary full-width">📤 Exportovat data</button>
+                        <input type="file" id="importData" accept=".json" style="display: none;">
+                        <button id="importDataBtn" class="btn-secondary full-width">📥 Importovat data</button>
                         <button id="clearData" class="btn-danger full-width">🗑 Vymazat všechna data</button>
                     </div>
 
@@ -218,7 +231,9 @@
                         <div class="app-info">
                             <p><strong>FlowTime Pro</strong></p>
                             <p>Verze 1.0.0</p>
-                            <p>Ultra-moderní sledování času</p>
+                            <p>Ultra-moderní sledování času pro rok 2026</p>
+                            <p>🚀 PWA aplikace s offline funkcionalitou</p>
+                            <p>💎 Glassmorphism UI/UX design</p>
                         </div>
                     </div>
                 </div>
@@ -249,6 +264,28 @@
         <div id="statusIndicator" class="status-indicator hidden">
             <span class="status-text">Offline</span>
         </div>
+
+        <!-- Loading Screen -->
+        <div id="loadingScreen" class="loading-screen">
+            <div class="loading-content">
+                <div class="loading-icon">
+                    <svg width="60" height="60" viewBox="0 0 60 60" fill="none">
+                        <circle cx="30" cy="30" r="25" stroke="url(#loadingGradient)" stroke-width="4" stroke-linecap="round" stroke-dasharray="157" stroke-dashoffset="157">
+                            <animate attributeName="stroke-dashoffset" dur="2s" values="157;0;157" repeatCount="indefinite"/>
+                        </circle>
+                        <defs>
+                            <linearGradient id="loadingGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" stop-color="#00F5FF"/>
+                                <stop offset="50%" stop-color="#9D4EDD"/>
+                                <stop offset="100%" stop-color="#FF0080"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+                <h2>FlowTime Pro</h2>
+                <p>Načítání...</p>
+            </div>
+        </div>
     </div>
 
     <!-- Scripts -->
@@ -259,13 +296,153 @@
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('service-worker.js')
                     .then((registration) => {
-                        console.log('SW registered: ', registration);
+                        console.log('SW registered successfully: ', registration);
+                        
+                        // Check for updates
+                        registration.addEventListener('updatefound', () => {
+                            const newWorker = registration.installing;
+                            newWorker.addEventListener('statechange', () => {
+                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    // New version available
+                                    if (confirm('Nová verze aplikace je k dispozici. Chcete ji načíst?')) {
+                                        window.location.reload();
+                                    }
+                                }
+                            });
+                        });
                     })
                     .catch((registrationError) => {
                         console.log('SW registration failed: ', registrationError);
                     });
             });
         }
+
+        // Handle install prompt
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            
+            // Show custom install button after delay
+            setTimeout(() => {
+                const installPrompt = document.getElementById('installPrompt');
+                if (installPrompt && !window.matchMedia('(display-mode: standalone)').matches) {
+                    installPrompt.classList.remove('hidden');
+                }
+            }, 5000);
+        });
+
+        // Handle app installed
+        window.addEventListener('appinstalled', () => {
+            console.log('FlowTime Pro was installed successfully');
+            const installPrompt = document.getElementById('installPrompt');
+            if (installPrompt) {
+                installPrompt.classList.add('hidden');
+            }
+            deferredPrompt = null;
+        });
+
+        // Check if app is running in standalone mode
+        if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
+            console.log('App is running in standalone mode');
+            document.body.classList.add('standalone');
+        }
+
+        // Hide loading screen when app is ready
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const loadingScreen = document.getElementById('loadingScreen');
+                if (loadingScreen) {
+                    loadingScreen.style.opacity = '0';
+                    setTimeout(() => {
+                        loadingScreen.style.display = 'none';
+                    }, 500);
+                }
+            }, 1500);
+        });
+
+        // Handle keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            // Space = start/pause timer
+            if (e.code === 'Space' && !e.target.matches('input, textarea, select')) {
+                e.preventDefault();
+                const startBtn = document.getElementById('startBtn');
+                const pauseBtn = document.getElementById('pauseBtn');
+                
+                if (!startBtn.classList.contains('hidden')) {
+                    startBtn.click();
+                } else if (!pauseBtn.classList.contains('hidden')) {
+                    pauseBtn.click();
+                }
+            }
+            
+            // Numbers 1-4 for navigation
+            if (e.key >= '1' && e.key <= '4' && !e.target.matches('input, textarea, select')) {
+                const navBtns = document.querySelectorAll('.nav-btn');
+                const targetBtn = navBtns[parseInt(e.key) - 1];
+                if (targetBtn) {
+                    targetBtn.click();
+                }
+            }
+        });
+
+        // Handle visibility changes (app goes background/foreground)
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                console.log('App went to background');
+            } else {
+                console.log('App came to foreground');
+                // Refresh timer display if running
+                if (window.app?.timer.isRunning) {
+                    window.app.updateTimer();
+                }
+            }
+        });
+
+        // Handle online/offline events
+        window.addEventListener('online', () => {
+            const statusIndicator = document.getElementById('statusIndicator');
+            if (statusIndicator) {
+                statusIndicator.classList.add('hidden');
+            }
+            console.log('App is online');
+        });
+
+        window.addEventListener('offline', () => {
+            const statusIndicator = document.getElementById('statusIndicator');
+            if (statusIndicator) {
+                statusIndicator.classList.remove('hidden');
+                statusIndicator.querySelector('.status-text').textContent = 'Offline režim';
+            }
+            console.log('App is offline');
+        });
+
+        // Prevent zoom on iOS
+        document.addEventListener('touchstart', (e) => {
+            if (e.touches.length > 1) {
+                e.preventDefault();
+            }
+        });
+
+        // Prevent context menu on long press
+        document.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+        });
+
+        // Handle safe area adjustments
+        function updateSafeArea() {
+            const root = document.documentElement;
+            if (CSS.supports('padding: env(safe-area-inset-top)')) {
+                root.style.setProperty('--safe-top', 'env(safe-area-inset-top)');
+                root.style.setProperty('--safe-bottom', 'env(safe-area-inset-bottom)');
+                root.style.setProperty('--safe-left', 'env(safe-area-inset-left)');
+                root.style.setProperty('--safe-right', 'env(safe-area-inset-right)');
+            }
+        }
+        
+        updateSafeArea();
+        window.addEventListener('orientationchange', updateSafeArea);
+        window.addEventListener('resize', updateSafeArea);
     </script>
 </body>
 </html>
